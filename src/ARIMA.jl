@@ -20,7 +20,7 @@ function ARIMA{p, d, q}(coefficients::Vector{T}) where {p, d, q, T}
 end
 
 function is_valid(model::ARIMA{p, d, q}) where {p, d, q}
-    all(>=(0), model.ϕ) && all(>=(0), model.θ)
+    all(<=(1), abs.(model.ϕ)) && all(<=(1), abs.(model.θ))
 end
 
 function nparams(::Type{ARIMA{p, d, q}}) where {p, d, q}
@@ -39,21 +39,30 @@ function presamples(model::ARIMA{p, d, q}) where {p, d, q}
     d + max(p, q)
 end
 
-function initial_coefficients(::Type{ARIMA{p, d, q}}, y) where {p, d, q}
-    vcat(mean(y), fill(0.1, p), fill(0.1, q))
+function initial_coefficients(::Type{ARIMA{p, d, q}}, y::Vector{T}) where {p, d, q, T}
+    N = length(y)
+    X = Matrix{T}(undef, N - p, p + 1)
+    X[:, 1] .= ones(T)
+    for i in 1:p
+        X[:, i + 1] .= y[p - i + 1:N - i]
+    end
+    ϕ = X \ y[(p + 1):end]
+    vcat(ϕ, zeros(T, q))
 end
 
-function conditional_mean(model::ARIMA{p, d, q, T}, y) where {p, d, q, T}
+function conditional_mean(model::ARIMA{p, d, q, T}, y, ϵ) where {p, d, q, T}
     ŷ = zeros(T, length(y) - d)
-    ϵ = zeros(T, length(y) - d)
+    ŷ .= model.C
     for t in 2:length(y)
-        ŷ[t] += model.C
-        ϵ[t-1] = y[t-1] - ŷ[t-1]
-        for (i, φ) in enumerate(model.ϕ)
-            ŷ[t] += y[t-i] * φ
+        if t > p
+            for (i, φ) in enumerate(model.ϕ)
+                ŷ[t] += y[t-i] * φ
+            end
         end
-        for (i, ϑ) in enumerate(model.θ)
-            ŷ[t] += ϵ[t-i] * ϑ
+        if t > q
+            for (i, ϑ) in enumerate(model.θ)
+                ŷ[t] += ϵ[t-i] * ϑ
+            end
         end
     end
     ŷ

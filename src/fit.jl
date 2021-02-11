@@ -1,18 +1,16 @@
-function process_mean(model, y)
-    t = length(y)
+function process_mean(model, y, ϵ, t)
     if t <= presamples(model)
         mean(y)
     else
-        conditional_mean(model, y)
+        conditional_mean(model, y[1:t], ϵ[1:t])
     end
 end
  
-function process_variance(model, y)
-    t = length(y)
+function process_variance(model, y, t)
     if t <= presamples(model)
         var(y)
     else
-        conditional_variance(model, y)
+        conditional_variance(model, y[1:t])
     end
 end
 
@@ -23,8 +21,8 @@ function log_likelihood(mean_model::ConditionalMeanModel{T}, variance_model::Con
 
     LL = 0.0
     for t in 1:N
-        μ̂ = process_mean(mean_model, y[1:t])
-        σ̂ = sqrt(process_variance(variance_model, y[1:t]))
+        μ̂ = process_mean(mean_model, y, ϵ, t)
+        σ̂ = sqrt(process_variance(variance_model, y, t))
         ϵ[t] = y[t] - μ̂[end]
         LL += logpdf(Normal(0, σ̂), ϵ[t])
     end
