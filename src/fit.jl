@@ -22,7 +22,7 @@ function log_likelihood(mean_model::ConditionalMeanModel{T}, variance_model::Con
     LL = 0.0
     for t in 1:N
         μ̂ = process_mean(mean_model, y, ϵ, t)
-        σ̂ = sqrt(process_variance(variance_model, y, t))
+        σ̂ = sqrt(process_variance(variance_model, y, t)[end])
         ϵ[t] = y[t] - μ̂[end]
         LL += logpdf(Normal(0, σ̂), ϵ[t])
     end

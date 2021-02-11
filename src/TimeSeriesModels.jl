@@ -9,6 +9,7 @@ export
     MA,
     ARMA,
     ARIMA,
+    ARCH,
     GARCH,
     SampleMean,
     SampleVariance,
@@ -17,11 +18,11 @@ export
 abstract type ConditionalMeanModel{T} end
 abstract type ConditionalVarianceModel{T} end
 
-include("ZeroMean.jl")
-include("SampleMean.jl")
-include("SampleVariance.jl")
+include("ConditionalMean/ZeroMean.jl")
+include("ConditionalMean/SampleMean.jl")
+include("ConditionalMean/ARIMA.jl")
+include("ConditionalVariance/SampleVariance.jl")
+include("ConditionalVariance/GARCH.jl")
 include("fit.jl")
-include("ARIMA.jl")
-#include("GARCH.jl")
 
 end # module
