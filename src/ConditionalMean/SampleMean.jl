@@ -22,7 +22,7 @@ function initial_coefficients(::Type{SampleMean}, y)
     [mean(y)]
 end
 
-function conditional_mean(model::SampleMean{T}, y::Vector) where {T}
+function conditional_mean(model::SampleMean{T}, y::Vector, ϵ) where {T}
     T(model.μ̄)
 end
 

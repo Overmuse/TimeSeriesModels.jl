@@ -22,7 +22,7 @@ function initial_coefficients(::Type{SampleVariance}, y)
     [var(y)]
 end
 
-function conditional_variance(model::SampleVariance{T}, y::Vector) where {T}
+function conditional_variance(model::SampleVariance{T}, y::Vector, σ) where {T}
     T(model.σ̄²)
 end
 
