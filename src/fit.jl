@@ -46,9 +46,9 @@ function fit(mean_model::Type{<:ConditionalMeanModel}, variance_model::Type{<:Co
 end
 
 function fit(model::Type{<:ConditionalMeanModel}, y)
-    fit(model, SampleVariance, y)
+    fit(model, ConstantVariance, y)
 end
 
 function fit(model::Type{<:ConditionalVarianceModel}, y)
-    fit(SampleMean, model, y)
+    fit(ConstantMean, model, y)
 end
