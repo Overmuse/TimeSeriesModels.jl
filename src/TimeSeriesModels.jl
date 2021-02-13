@@ -5,6 +5,7 @@ using Optim: BFGS, optimize, minimizer
 using Statistics: mean, var
 
 export
+    UnivariateModel,
     AR,
     MA,
     ARMA,
@@ -17,6 +18,7 @@ export
 abstract type ConditionalMeanModel{T} end
 abstract type ConditionalVarianceModel{T} end
 
+include("UnivariateModel.jl")
 include("ConditionalMean/ZeroMean.jl")
 include("ConditionalMean/SampleMean.jl")
 include("ConditionalMean/ARMA.jl")
