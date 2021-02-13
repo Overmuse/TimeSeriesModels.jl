@@ -42,7 +42,7 @@ function fit(mean_model::Type{<:ConditionalMeanModel}, variance_model::Type{<:Co
     solve = optimize(opt, init, method = BFGS(), autodiff = :forward)
     coef = minimizer(solve)
     mean_nparams = nparams(mean_model)
-    (mean_model(coef[1:mean_nparams]), variance_model(coef[mean_nparams+1:end]))
+    UnivariateModel(mean_model(coef[1:mean_nparams]), variance_model(coef[mean_nparams+1:end]))
 end
 
 function fit(model::Type{<:ConditionalMeanModel}, y)
