@@ -43,19 +43,13 @@ function initial_coefficients(::Type{ARMA{p, q}}, y::Vector{T}) where {p, q, T}
 end
 
 function conditional_mean(model::ARMA{p, q, T}, y, ϵ) where {p, q, T}
-    ŷ = zeros(T, length(y))
-    ŷ .= model.C
-    for t in 2:length(y)
-        if t > p
-            for (i, φ) in enumerate(model.ϕ)
-                ŷ[t] += y[t-i] * φ
-            end
-        end
-        if t > q
-            for (i, ϑ) in enumerate(model.θ)
-                ŷ[t] += ϵ[t-i] * ϑ
-            end
-        end
+    ŷ = model.C
+    t = length(y)
+    for (i, φ) in enumerate(model.ϕ)
+        ŷ += y[t-i] * φ
+    end
+    for (i, ϑ) in enumerate(model.θ)
+        ŷ += ϵ[end - i + 1] * ϑ
     end
     ŷ
 end

@@ -35,20 +35,15 @@ function initial_coefficients(::Type{GARCH{p, q}}, y) where {p, q}
     vcat(ω, betas, alphas)
 end
 
-function conditional_variance(model::GARCH{p, q, T}, ϵ::Vector, σ̂) where {p, q, T}
+function conditional_variance(model::GARCH{p, q, T}, ϵ, σ̂) where {p, q, T}
     # TODO: Remove σ₀ parameter somehow
-    t = length(ϵ)
-    σ² = zeros(T, t)
-    n = presamples(model)
 
-    σ² .= model.ω
-    for i in (n+1):t
-        for j in 1:p
-            σ²[i] += model.betas[j] * σ̂[i - j] ^ 2
-        end
-        for j in 1:q
-            σ²[i] += model.alphas[j] * ϵ[i - j] ^ 2
-        end
+    σ² = model.ω
+    for j in 1:p
+        σ² += model.betas[j] * σ̂[end - j + 1] ^ 2
+    end
+    for j in 1:q
+        σ² += model.alphas[j] * ϵ[end - j + 1] ^ 2
     end
     σ²
 end
