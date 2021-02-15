@@ -36,13 +36,11 @@ function initial_coefficients(::Type{GARCH{p, q}}, y) where {p, q}
 end
 
 function conditional_variance(model::GARCH{p, q, T}, ϵ, σ̂) where {p, q, T}
-    # TODO: Remove σ₀ parameter somehow
-
     σ² = model.ω
-    for j in 1:p
+    @inbounds for j in 1:p
         σ² += model.betas[j] * σ̂[end - j + 1] ^ 2
     end
-    for j in 1:q
+    @inbounds for j in 1:q
         σ² += model.alphas[j] * ϵ[end - j + 1] ^ 2
     end
     σ²

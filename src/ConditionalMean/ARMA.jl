@@ -45,10 +45,10 @@ end
 function conditional_mean(model::ARMA{p, q, T}, y, ϵ) where {p, q, T}
     ŷ = model.C
     t = length(y)
-    for (i, φ) in enumerate(model.ϕ)
+    @inbounds for (i, φ) in enumerate(model.ϕ)
         ŷ += y[t-i] * φ
     end
-    for (i, ϑ) in enumerate(model.θ)
+    @inbounds for (i, ϑ) in enumerate(model.θ)
         ŷ += ϵ[end - i + 1] * ϑ
     end
     ŷ

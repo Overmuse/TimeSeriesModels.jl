@@ -2,7 +2,7 @@ function process_mean(model, y, ϵ, t)
     if t <= presamples(model)
         mean(y)
     else
-        conditional_mean(model, y[1:t], ϵ)
+        conditional_mean(model, view(y, 1:t), ϵ)
     end
 end
  
