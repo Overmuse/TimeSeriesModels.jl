@@ -22,7 +22,7 @@ function initial_coefficients(::Type{ConstantMean}, y)
     [mean(y)]
 end
 
-function conditional_mean(model::ConstantMean{T}, y, ϵ) where {T}
+function conditional_mean(model::ConstantMean{T}, y, ϵ, σ) where {T}
     T(model.μ̄)
 end
 
