@@ -42,7 +42,7 @@ function initial_coefficients(::Type{ARMA{p, q}}, y::Vector{T}) where {p, q, T}
     vcat(ϕ, zeros(T, q))
 end
 
-function conditional_mean(model::ARMA{p, q, T}, y, ϵ) where {p, q, T}
+function conditional_mean(model::ARMA{p, q, T}, y, ϵ, σ) where {p, q, T}
     ŷ = model.C
     t = length(y)
     @inbounds for (i, φ) in enumerate(model.ϕ)

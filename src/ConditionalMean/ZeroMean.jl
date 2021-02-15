@@ -1,16 +1,14 @@
-struct ZeroMean{T} <: ConditionalMeanModel{T}
-    coefs::Vector{T}
+struct ZeroMean{T} <: ConditionalMeanModel{T} end
 
-    function ZeroMean{T}(coefs::Vector) where {T}
-        new{T}(coefs)
-    end
+function ZeroMean(coefs::Vector{T}) where {T}
+    ZeroMean{T}()
 end
 
 function is_valid(::ZeroMean)
     true
 end
 
-function nparams(::Type{ZeroMean{T}}) where {T}
+function nparams(::Type{ZeroMean})
     0
 end
 
@@ -18,10 +16,10 @@ function presamples(::ZeroMean)
     0
 end
 
-function initial_coefficients(::Type{ZeroMean{T}}, y) where T
+function initial_coefficients(::Type{ZeroMean}, y::Vector{T}) where {T}
     T[]
 end
 
-function conditional_mean(model::ZeroMean{T}, y::Vector) where {T}
+function conditional_mean(::ZeroMean{T}, y, ϵ, σ) where {T}
     T(0.0)
 end
