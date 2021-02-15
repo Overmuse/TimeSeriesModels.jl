@@ -2,7 +2,7 @@ function process_mean(model, y, ϵ, t)
     if t <= presamples(model)
         mean(y)
     else
-        conditional_mean(model, y[1:t], ϵ[1:t])
+        conditional_mean(model, view(y, 1:t), ϵ)
     end
 end
  
@@ -10,23 +10,23 @@ function process_variance(model, y, ϵ, σ̂, t)
     if t <= presamples(model)
         var(y)
     else
-        conditional_variance(model, ϵ[1:t], σ̂[1:t])
+        conditional_variance(model, ϵ, σ̂)
     end
 end
 
 function log_likelihood(mean_model::ConditionalMeanModel{T}, variance_model::ConditionalVarianceModel{T}, y::Vector) where {T}
     N = length(y)
-    μ̂ = zeros(T, N)
-    σ̂ = zeros(T, N)
-    ϵ = zeros(T, N)
+    μ̂ = CircularBuffer{T}(max(presamples(mean_model), 1))
+    σ̂ = CircularBuffer{T}(max(presamples(variance_model), 1)) 
+    ϵ = CircularBuffer{T}(max(presamples(mean_model), presamples(variance_model), 1))
     (is_valid(mean_model) && is_valid(variance_model)) || return T(-Inf)
 
     LL = 0.0
     for t in 1:N
-        μ̂[t] = process_mean(mean_model, y, ϵ, t)[end]
-        ϵ[t] = y[t] - μ̂[t]
-        σ̂[t] = sqrt(process_variance(variance_model, y, ϵ, σ̂, t)[end])
-        LL += logpdf(Normal(0, σ̂[t]), ϵ[t])
+        push!(μ̂, process_mean(mean_model, y, ϵ, t))
+        push!(σ̂, sqrt(process_variance(variance_model, y, ϵ, σ̂, t)))
+        push!(ϵ, y[t] - μ̂[end])
+        LL += logpdf(Normal(0, σ̂[end]), ϵ[end])
     end
     LL
 end

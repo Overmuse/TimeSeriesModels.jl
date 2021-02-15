@@ -1,5 +1,6 @@
 module TimeSeriesModels
 
+using DataStructures: CircularBuffer
 using Distributions: Normal, logpdf
 using Optim: BFGS, optimize, minimizer
 using Statistics: mean, var
