@@ -54,6 +54,10 @@ function conditional_mean(model::ARMA{p, q, T}, y, ϵ, σ) where {p, q, T}
     ŷ
 end
 
+function unconditional_mean(model::ARMA{p, q, T}) where {p, q, T}
+    model.C
+end
+
 function residuals(model::ARMA, y)
     y .- filter(model, y)
 end
