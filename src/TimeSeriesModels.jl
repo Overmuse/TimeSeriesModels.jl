@@ -1,20 +1,21 @@
 module TimeSeriesModels
 
 using DataStructures: CircularBuffer
-using Distributions: Normal, logpdf
+using Distributions: Distribution, LocationScale, Normal, TDist, logpdf
 using Optim: BFGS, optimize, minimizer
-using Statistics: mean, var
+using Statistics: mean, std
+import StatsBase: fit, loglikelihood
 
 export
     UnivariateModel,
 
     # Mean models
-    ZeroMean,
-    ConstantMean,
     AR,
-    MA,
     ARMA,
+    ConstantMean,
+    MA,
     VolInMean,
+    ZeroMean,
 
     # Variance models
     ARCH,
@@ -22,7 +23,9 @@ export
     ConstantVariance,
 
     # Functions
-    fit
+    fit,
+    loglikelihood,
+    simulate
 
 abstract type ConditionalMeanModel{T} end
 abstract type ConditionalVarianceModel{T} end
@@ -34,6 +37,8 @@ include("ConditionalMean/VolInMean.jl")
 include("ConditionalMean/ARMA.jl")
 include("ConditionalVariance/ConstantVariance.jl")
 include("ConditionalVariance/GARCH.jl")
+include("distributions.jl")
 include("fit.jl")
+include("simulate.jl")
 
 end # module
