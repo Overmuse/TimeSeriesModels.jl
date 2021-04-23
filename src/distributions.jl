@@ -9,8 +9,8 @@ function is_valid(d::TDist)
 end
 function is_valid(d::Distribution)
     if d isa LocationScale
-        is_valid(d.ρ) && (mean(d) ≈ 0) && (var(d) ≈ 1) 
+        is_valid(d.ρ) && (mean(d) ≈ 0) && (std(d) ≈ 1) 
     else
-        (mean(d) ≈ 0) && (var(d) ≈ 1) 
+        (mean(d) ≈ 0) && (std(d) ≈ 1) 
     end
 end

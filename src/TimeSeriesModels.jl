@@ -1,9 +1,9 @@
 module TimeSeriesModels
 
 using DataStructures: CircularBuffer
-using Distributions: Distribution, Normal, TDist, LocationScale, logpdf
+using Distributions: Distribution, LocationScale, Normal, TDist, logpdf
 using Optim: BFGS, optimize, minimizer
-using Statistics: mean, std, var
+using Statistics: mean, std
 import StatsBase: fit, loglikelihood
 
 export
