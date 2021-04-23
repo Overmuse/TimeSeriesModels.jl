@@ -55,26 +55,9 @@ function conditional_mean(model::ARMA{p, q, T}, y, ϵ, σ) where {p, q, T}
 end
 
 function unconditional_mean(model::ARMA{p, q, T}) where {p, q, T}
-    model.C
+    model.C / (1.0 - sum(mean.ϕ))
 end
 
 function residuals(model::ARMA, y)
     y .- filter(model, y)
-end
-
-function simulate(model::ARMA{p, q}, t) where {p, q}
-    y = zeros(t)
-    ϵ = zeros(t)
-    y[1] = model.C
-    for t in 2:length(y)
-        ϵ[t-1] = rand()
-        y[t] += model.C
-        for (i, φ) in enumerate(model.ϕ)
-            y[t] += y[t-i] * φ
-        end
-        for (i, ϑ) in enumerate(model.θ)
-            y[t] += ϵ[t-1] * ϑ
-        end
-    end
-    y
 end
